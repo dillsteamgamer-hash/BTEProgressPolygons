@@ -1,5 +1,6 @@
 package mplugin.net.bTEProgressPolygons.commands;
 
+import mplugin.net.bTEProgressPolygons.resources.Coordinate;
 import mplugin.net.bTEProgressPolygons.resources.DatabaseManager;
 import mplugin.net.bTEProgressPolygons.resources.Polygon;
 import org.bukkit.command.Command;
@@ -52,27 +53,40 @@ public class makeProgressPolygon implements CommandExecutor {
             e.printStackTrace();
         }
 
+        int sumX = 0;
+        int sumZ = 0;
+
+        for (Coordinate c : polygon.points) {
+            sumX += c.x;
+            sumZ += c.z;
+        }
+
+        int centreX = sumX / polygon.points.size();
+        int centreZ = sumZ / polygon.points.size();
 
         polygon.createDatabaseFile();
 
-        sql = "INSET INTO polygons (id, name, points) VALUES (?,?,?)";
+        sql = "INSET INTO polygons (id, name, points, centreX, centreZ) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement ps = databaseConnection.prepareStatement(sql);
             ps.setInt(1,polygon.ID);
             ps.setString(2,polygon.name);
             ps.setString(3,polygon.createDatabaseFile());
+            ps.setInt(4, centreX);
+            ps.setInt(5, centreZ);
             ps.executeUpdate();
             player.sendMessage("§2Successfully added the polygon to the database:");
             player.sendMessage("§2ID = " + polygon.ID);
             player.sendMessage("§2Name = " + polygon.name);
             player.sendMessage("If you forgot to set a name, and need to, record this ID, run '/deleteProgressPolygon [ID] yes' and post a message in your staff chat for a second authorization!");
+            player.removeMetadata("creatingPolygon", plugin);
         } catch (SQLException e) {
             System.out.println("§4Fail to add polygon to database!" + e);
             commandSender.sendMessage("§4Error in adding the polygon to the database, see console for more info");
             e.printStackTrace();
         }
 
-
+        databaseManager.closeDatabase();
         return false;
     }
 }

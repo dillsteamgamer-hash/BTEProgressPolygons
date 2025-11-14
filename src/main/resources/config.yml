@@ -1,0 +1,3 @@
+Polygon-Load-Distance: 216
+Reload-Polygon-Cooldown: 15000
+On-Receive-Polygon-Creator-Tool: "Format names using: 'County-Town/City-Area' e.g. 'Northamptonshire-Northampton-Duston'"

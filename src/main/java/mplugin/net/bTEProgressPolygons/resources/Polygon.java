@@ -40,9 +40,13 @@ public class Polygon {
 
 
     ArrayList<Location> blockLocations = new ArrayList<>();
+
+
     public ArrayList<Location> getLines(){
         return blockLocations;
     }
+
+
     public void setLines(World world){
         blockLocations = new ArrayList<>();
 

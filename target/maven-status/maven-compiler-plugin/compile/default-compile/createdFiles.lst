@@ -1,0 +1,15 @@
+mplugin\net\bTEProgressPolygons\commands\deleteProgressPolygon.class
+mplugin\net\bTEProgressPolygons\resources\DatabaseManager.class
+mplugin\net\bTEProgressPolygons\resources\Polygon.class
+mplugin\net\bTEProgressPolygons\commands\toggleProgressPolygonVisibility.class
+mplugin\net\bTEProgressPolygons\ProgressPolygons.class
+mplugin\net\bTEProgressPolygons\commands\makeProgressPolygon.class
+mplugin\net\bTEProgressPolygons\resources\reloadPolygons$1.class
+mplugin\net\bTEProgressPolygons\commands\getPolygonName.class
+mplugin\net\bTEProgressPolygons\eventListeners\interact.class
+mplugin\net\bTEProgressPolygons\resources\Coordinate.class
+mplugin\net\bTEProgressPolygons\resources\reloadPolygons.class
+mplugin\net\bTEProgressPolygons\commands\teleportProgressPolygon.class
+mplugin\net\bTEProgressPolygons\commands\getPolygonID.class
+mplugin\net\bTEProgressPolygons\commands\getNearbyPolygons.class
+mplugin\net\bTEProgressPolygons\commands\getPolygonProgressTool.class

@@ -28,6 +28,21 @@ public class reloadPolygons {
             @Override
             public void run() {
                 for(Player player : Bukkit.getOnlinePlayers()){
+                    polygons.clear();
+
+                    if(player.hasMetadata("creatingPolygon")){
+                        Polygon poly = new Polygon();
+                        poly.setDataFromDatabaseFile(player.getMetadata("creatingPolygon").toString());
+
+                        poly.setLines(player.getWorld());
+                        ArrayList<Location> blockLocations = poly.getLines();
+
+                        for(Location blockLoc : blockLocations){
+                            player.sendBlockChange(blockLoc, Material.DIAMOND_BLOCK.createBlockData());
+                        }
+                    }
+
+
                     if(player.getMetadata("isViewingPolygons").getFirst().asBoolean()){
                         int radius = plugin.getConfig().getInt("Polygon-Load-Distance");
 
@@ -41,8 +56,6 @@ public class reloadPolygons {
 
 
                         String sql = "SELECT * FROM polygons WHERE centreX BETWEEN ? AND ? AND centreZ BETWEEN ? AND ?";
-
-                        polygons.clear();
 
                         try (PreparedStatement ps = databaseConnection.prepareStatement(sql)) {
                             ps.setInt(1, minX);
