@@ -1,0 +1,5 @@
+name: BTEProgressPolygons
+version: '1.0'
+main: mplugin.net.bTEProgressPolygons.BTEProgressPolygons
+api-version: '1.21'
+authors: [ Dillsteamgamer ]
