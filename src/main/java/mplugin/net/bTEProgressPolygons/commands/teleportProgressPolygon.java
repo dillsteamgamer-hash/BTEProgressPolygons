@@ -37,6 +37,7 @@ public class teleportProgressPolygon implements CommandExecutor {
             final int ID = Integer.parseInt(args[0]);
             String sql = "SELECT * FROM polygons WHERE id=?";
             PreparedStatement ps = databaseConnection.prepareStatement(sql);
+            ps.setInt(1, ID);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 centre.x = rs.getInt("centreX");

@@ -20,6 +20,7 @@ public class getPolygonProgressTool implements CommandExecutor {
     }
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+        plugin.saveDefaultConfig();
         Player player = (Player) commandSender;
         ItemStack rod = new ItemStack(Material.BLAZE_ROD);
         ItemMeta meta = rod.getItemMeta();

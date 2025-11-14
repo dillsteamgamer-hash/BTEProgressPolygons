@@ -66,7 +66,7 @@ public class makeProgressPolygon implements CommandExecutor {
 
         polygon.createDatabaseFile();
 
-        sql = "INSET INTO polygons (id, name, points, centreX, centreZ) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO polygons (id, name, points, centreX, centreZ) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement ps = databaseConnection.prepareStatement(sql);
             ps.setInt(1,polygon.ID);

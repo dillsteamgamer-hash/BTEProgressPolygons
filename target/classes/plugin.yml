@@ -5,7 +5,7 @@ api-version: '1.21'
 authors: [ Dillsteamgamer ]
 
 commands:
-  getProgressPolygonTool:
+  getPolygonProgressTool:
     description: Give the player the tool used to make a polygon selection, also gives a standard message to the user for name format for polygons (configurable)
     permission: ProgressPolygons.make
 

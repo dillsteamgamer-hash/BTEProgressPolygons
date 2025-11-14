@@ -34,7 +34,7 @@ public class getPolygonName implements CommandExecutor {
                 ps.setInt(1, Integer.parseInt(args[0]));
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        commandSender.sendMessage("§3Found Polygon ID: " + rs.getString("name"));
+                        commandSender.sendMessage("§3Found Polygon Name: " + rs.getString("name"));
                     }
                     commandSender.sendMessage("§2Listed all found polygons with that ID!");
                 }

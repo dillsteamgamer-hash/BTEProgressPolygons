@@ -26,6 +26,7 @@ public class getNearbyPolygons implements CommandExecutor{
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+        plugin.saveDefaultConfig();
         databaseManager = new DatabaseManager(plugin);
         databaseManager.initDatabase();
         databaseConnection = databaseManager.getConnection();

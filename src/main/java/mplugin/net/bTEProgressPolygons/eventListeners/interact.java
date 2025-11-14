@@ -3,6 +3,7 @@ package mplugin.net.bTEProgressPolygons.eventListeners;
 import mplugin.net.bTEProgressPolygons.resources.Coordinate;
 import mplugin.net.bTEProgressPolygons.resources.Polygon;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
 
 public class interact implements Listener {
     JavaPlugin plugin;
@@ -36,9 +39,7 @@ public class interact implements Listener {
             ItemMeta meta = item.getItemMeta();
             Component displayName = meta.displayName();
 
-            if (Component.text("Polygon Creation Tool").equals(displayName)) {
-                player.sendMessage(Component.text("true"));
-            }else{
+            if (!Component.text("Polygon Creation Tool").equals(displayName)) {
                 return;
             }
         }else{
@@ -51,8 +52,8 @@ public class interact implements Listener {
             rightClick(player, event);
         }else{
             player.sendMessage("§4Must click a block to use this tool!");
+            return;
         }
-
 
     }
 
@@ -67,6 +68,7 @@ public class interact implements Listener {
         polygon.addPoint(blockCoordinate);
 
         String polygonData = polygon.createDatabaseFile();
+        player.sendMessage(polygonData);
 
         player.setMetadata("creatingPolygon", new FixedMetadataValue(plugin, polygonData));
     }
@@ -83,10 +85,14 @@ public class interact implements Listener {
         blockCoordinate.x = block.getX();
         blockCoordinate.z = block.getZ();
 
+        polygon.setDataFromDatabaseFile(player.getMetadata("creatingPolygon").getFirst().asString());
+        player.sendMessage(polygon.createDatabaseFile());
+
         int displacement = Math.toIntExact(Math.round(Math.sqrt(Math.pow(polygon.points.getFirst().x - blockCoordinate.x, 2) + Math.pow(polygon.points.getFirst().z - blockCoordinate.z, 2))));
 
         if(displacement >= 512){
             player.sendMessage("§4This point is > 512 blocks from the initial point, if needed create multiple (smaller) polygons for the area!");
+            return;
         }
 
         polygon.setDataFromDatabaseFile(player.getMetadata("creatingPolygon").getFirst().asString());

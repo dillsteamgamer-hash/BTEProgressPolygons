@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 public class reloadPolygons {
     public reloadPolygons(JavaPlugin plugin){
+        plugin.saveDefaultConfig();
         Timer timer = new Timer();
         DatabaseManager databaseManager = new DatabaseManager(plugin);
         databaseManager.initDatabase();
@@ -27,12 +28,14 @@ public class reloadPolygons {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("Clock Cycle");
                 for(Player player : Bukkit.getOnlinePlayers()){
                     polygons.clear();
 
                     if(player.hasMetadata("creatingPolygon")){
+                        player.sendMessage("Has poly data");
                         Polygon poly = new Polygon();
-                        poly.setDataFromDatabaseFile(player.getMetadata("creatingPolygon").toString());
+                        poly.setDataFromDatabaseFile(player.getMetadata("creatingPolygon").getFirst().asString());
 
                         poly.setLines(player.getWorld());
                         ArrayList<Location> blockLocations = poly.getLines();
@@ -40,10 +43,11 @@ public class reloadPolygons {
                         for(Location blockLoc : blockLocations){
                             player.sendBlockChange(blockLoc, Material.DIAMOND_BLOCK.createBlockData());
                         }
+                    }else{
+                        player.sendMessage("No poly data");
                     }
 
-
-                    if(player.getMetadata("isViewingPolygons").getFirst().asBoolean()){
+                    if(player.hasMetadata("isViewingPolygons")) {
                         int radius = plugin.getConfig().getInt("Polygon-Load-Distance");
 
                         int playerX = player.getLocation().getBlockX();
@@ -71,16 +75,16 @@ public class reloadPolygons {
                                 }
                             }
 
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        for(Polygon polygon : polygons){
-                            ArrayList<Location> blockLocations = polygon.getLines();
-                            for(Location blockLoc : blockLocations){
-                                player.sendBlockChange(blockLoc, Material.DIAMOND_BLOCK.createBlockData());
+                            } catch (SQLException e) {
+                                e.printStackTrace();
                             }
-                        }
+
+                            for (Polygon polygon : polygons) {
+                                ArrayList<Location> blockLocations = polygon.getLines();
+                                for (Location blockLoc : blockLocations) {
+                                    player.sendBlockChange(blockLoc, Material.DIAMOND_BLOCK.createBlockData());
+                                }
+                            }
                     }
                 }
             }

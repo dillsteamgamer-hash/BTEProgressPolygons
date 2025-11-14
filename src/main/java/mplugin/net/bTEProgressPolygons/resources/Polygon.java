@@ -12,10 +12,11 @@ public class Polygon {
     public Coordinate centre = new Coordinate();
 
     public void addPoint(Coordinate coordinate){
-        points.add(coordinate);
+            points.add(coordinate);
     }
 
     public void setDataFromDatabaseFile(String pointsString){
+        points.clear();
         String[] parts = pointsString.split("/");
         for (String part : parts) {
             String[] split = part.split(",");
@@ -34,7 +35,10 @@ public class Polygon {
             holder.append(point.z);
             holder.append("/");
         }
-        holder.deleteCharAt(holder.length()-1);
+        if (!holder.isEmpty()) {
+            holder.setLength(holder.length() - 1);
+        }
+        System.out.println(holder);
         return holder.toString();
     }
 
@@ -48,67 +52,17 @@ public class Polygon {
 
 
     public void setLines(World world){
-        blockLocations = new ArrayList<>();
+        blockLocations.clear();
+        ArrayList<Coordinate> allLineBlocks = new ArrayList<>();
 
-        //Iterates between all points (excluding line between first and last)
-        for(int i = 0; i < points.toArray().length - 1; i++){
-            Coordinate point1 = points.get(i);
-            Coordinate point2 = points.get(i+1);
-
-            if(point2.x == point1.x){
-                for(int j = point1.z; j <= point2.z; j++){
-                    blockLocations.add(new Location(
-                            world,
-                            point1.x,
-                            world.getHighestBlockYAt(point1.x, j) + 1,
-                            j));
-                }
-            }else if(point2.z == point1.z){
-                for(int j = point1.x; j <= point2.x; j++){
-                    blockLocations.add(new Location(
-                            world,
-                            j,
-                            world.getHighestBlockYAt(j, point1.z) + 1,
-                            point1.z));
-                }
-            }else{
-                float gradient = (float) (point2.z - point1.z) / (float) (point2.x - point1.x);
-                float holder = point1.z;
-                for(int j = point1.x + 1; j<= point2.x; j++){
-                    holder = holder + gradient;
-                    int zHolder = Math.round(holder);
-                    blockLocations.add(new Location(world, j, world.getHighestBlockYAt(j, zHolder)+1, zHolder));
-                }
-            }
+        for (int i = 0; i < points.size(); i++) {
+            Coordinate start = points.get(i);
+            Coordinate end = points.get((i + 1) % points.size()); // wraps around
+            allLineBlocks.addAll(getLine(start, end));
         }
 
-        //Draws line between first and last point
-        Coordinate point1 = points.getLast();
-        Coordinate point2 = points.getFirst();
-        if(point2.x == point1.x){
-            for(int j = point1.z; j <= point2.z; j++){
-                blockLocations.add(new Location(
-                        world,
-                        point1.x,
-                        world.getHighestBlockYAt(point1.x, j) + 1,
-                        j));
-            }
-        }else if(point2.z == point1.z){
-            for(int j = point1.x; j <= point2.x; j++){
-                blockLocations.add(new Location(
-                        world,
-                        j,
-                        world.getHighestBlockYAt(j, point1.z) + 1,
-                        point1.z));
-            }
-        }else{
-            float gradient = (float) (point2.z - point1.z) / (float) (point2.x - point1.x);
-            float holder = point1.z;
-            for(int j = point1.x + 1; j<= point2.x; j++){
-                holder = holder + gradient;
-                int zHolder = Math.round(holder);
-                blockLocations.add(new Location(world, j, world.getHighestBlockYAt(j, zHolder)+1, zHolder));
-            }
+        for(Coordinate block : allLineBlocks){
+            blockLocations.add(new Location(world, block.x, world.getHighestBlockYAt(block.x,block.z)+1,block.z));
         }
     }
 
@@ -126,5 +80,46 @@ public class Polygon {
 
         centre.x = (minX + maxX) / 2;
         centre.z = (minZ + maxZ) / 2;
+    }
+
+    public static ArrayList<Coordinate> getLine(Coordinate a, Coordinate b) {
+        ArrayList<Coordinate> result = new ArrayList<>();
+
+        int x1 = a.x;
+        int z1 = a.z;
+        int x2 = b.x;
+        int z2 = b.z;
+
+        int dx = Math.abs(x2 - x1);
+        int dz = Math.abs(z2 - z1);
+
+        int sx = x1 < x2 ? 1 : -1;
+        int sz = z1 < z2 ? 1 : -1;
+
+        int err = dx - dz;
+
+        while (true) {
+            Coordinate tempCoord = new Coordinate();
+            tempCoord.x = x1;
+            tempCoord.z = z1;
+            result.add(tempCoord);
+
+            if (x1 == x2 && z1 == z2)
+                break;
+
+            int e2 = 2 * err;
+
+            if (e2 > -dz) {
+                err -= dz;
+                x1 += sx;
+            }
+
+            if (e2 < dx) {
+                err += dx;
+                z1 += sz;
+            }
+        }
+
+        return result;
     }
 }
