@@ -5,6 +5,7 @@ import mplugin.net.bTEProgressPolygons.resources.Polygon;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,6 +47,9 @@ public class interact implements Listener {
             return;
         }
 
+        clearFakeBlocks(player);
+
+
         if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
             leftClick(player, event);
         }else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
@@ -54,6 +58,19 @@ public class interact implements Listener {
             player.sendMessage("§4Must click a block to use this tool!");
             return;
         }
+
+        Polygon poly = new Polygon();
+        poly.setDataFromDatabaseFile(player.getMetadata("creatingPolygon").getFirst().asString());
+
+        poly.setLines(player.getWorld());
+        ArrayList<Location> blockLocations = poly.getLines();
+
+        for(Location blockLoc : blockLocations){
+            recordFakeBlock(player, blockLoc);
+            player.sendBlockChange(blockLoc, Material.DIAMOND_BLOCK.createBlockData());
+        }
+
+        event.setCancelled(true);
 
     }
 
@@ -68,7 +85,6 @@ public class interact implements Listener {
         polygon.addPoint(blockCoordinate);
 
         String polygonData = polygon.createDatabaseFile();
-        player.sendMessage(polygonData);
 
         player.setMetadata("creatingPolygon", new FixedMetadataValue(plugin, polygonData));
     }
@@ -86,7 +102,6 @@ public class interact implements Listener {
         blockCoordinate.z = block.getZ();
 
         polygon.setDataFromDatabaseFile(player.getMetadata("creatingPolygon").getFirst().asString());
-        player.sendMessage(polygon.createDatabaseFile());
 
         int displacement = Math.toIntExact(Math.round(Math.sqrt(Math.pow(polygon.points.getFirst().x - blockCoordinate.x, 2) + Math.pow(polygon.points.getFirst().z - blockCoordinate.z, 2))));
 
@@ -103,5 +118,60 @@ public class interact implements Listener {
 
         player.removeMetadata("creatingPolygon", plugin);
         player.setMetadata("creatingPolygon", new FixedMetadataValue(plugin, polygonData));
+    }
+
+
+    public void recordFakeBlock(Player player, Location blockLoc) {
+
+        // Get existing metadata string (if any)
+        String existing = "";
+        if (player.hasMetadata("listFakeBlocks")) {
+            existing = player.getMetadata("listFakeBlocks").getFirst().asString().trim();
+        }
+
+        // Build new "x,y,z" entry
+        String newEntry = blockLoc.getBlockX() + "," +
+                (player.getWorld().getHighestBlockYAt(blockLoc.getBlockX(), blockLoc.getBlockZ()) + 1) + "," +
+                blockLoc.getBlockZ();
+
+        // Append properly
+        String result;
+        if (existing.isEmpty()) {
+            result = newEntry; // first entry
+        } else {
+            result = existing + "/" + newEntry; // append entry
+        }
+
+        // Save back
+        player.setMetadata("listFakeBlocks", new FixedMetadataValue(plugin, result));
+    }
+
+
+    public void clearFakeBlocks(Player player) {
+
+        if (!player.hasMetadata("listFakeBlocks")) {
+            return;
+        }
+
+        String data = player.getMetadata("listFakeBlocks").getFirst().asString();
+        player.removeMetadata("listFakeBlocks", plugin);
+
+        // Split each "x,y,z" entry
+        String[] entries = data.split("/");
+        World world = player.getWorld();
+
+        for (String entry : entries) {
+            String[] s = entry.split(",");
+            if (s.length != 3) continue;
+
+            int x = Integer.parseInt(s[0]);
+            int y = Integer.parseInt(s[1]);
+            int z = Integer.parseInt(s[2]);
+
+            Location loc = new Location(world, x, y, z);
+
+            // Reset fake block to real block
+            player.sendBlockChange(loc, world.getBlockAt(loc).getBlockData());
+        }
     }
 }
