@@ -5,7 +5,6 @@ import mplugin.net.bTEProgressPolygons.eventListeners.interact;
 import mplugin.net.bTEProgressPolygons.resources.reloadPolygons;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.*;
 import java.util.Objects;
 
 public final class ProgressPolygons extends JavaPlugin {
@@ -26,6 +25,9 @@ public final class ProgressPolygons extends JavaPlugin {
         Objects.requireNonNull(getCommand("teleportProgressPolygon")).setExecutor(new teleportProgressPolygon(this));
         Objects.requireNonNull(getCommand("makeProgressPolygon")).setExecutor(new makeProgressPolygon(this));
         Objects.requireNonNull(getCommand("toggleProgressPolygonVisibility")).setExecutor(new toggleProgressPolygonVisibility(this));
+        Objects.requireNonNull(getCommand("progressPolygonHelp")).setExecutor(new progressPolygonHelp(this));
+        Objects.requireNonNull(getCommand("progressPolygonStats")).setExecutor(new progressPolygonStats(this));
+
 
         //Listener set-up
         getServer().getPluginManager().registerEvents(new interact(this), this);

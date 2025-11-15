@@ -36,3 +36,11 @@ commands:
   toggleProgressPolygonVisibility:
     description: Toggles whether the player can see the polygons, refreshes every configurable seconds
     permission: ProgressPolygon.see
+
+  progressPolygonHelp:
+    description: Lists all commands, their arguments, and a brief description
+    permission: ProgressPolygon.help
+
+  progressPolygonStats:
+    description: Lists how many polygons have been made
+    permission: ProgressPolygon.stats

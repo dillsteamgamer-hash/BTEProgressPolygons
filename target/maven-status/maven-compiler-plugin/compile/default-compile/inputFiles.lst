@@ -4,6 +4,8 @@ C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEPro
 C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\commands\getPolygonName.java
 C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\commands\getPolygonProgressTool.java
 C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\commands\makeProgressPolygon.java
+C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\commands\progressPolygonHelp.java
+C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\commands\progressPolygonStats.java
 C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\commands\teleportProgressPolygon.java
 C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\commands\toggleProgressPolygonVisibility.java
 C:\Users\natha\IdeaProjects\BTEProgressPolygons\src\main\java\mplugin\net\bTEProgressPolygons\eventListeners\interact.java
